@@ -17,6 +17,8 @@ Then you need to follow the [instructions](https://github.com/devnoname120/vitac
 
 ### This extension
 
+Make sure you have [nodejs](https://nodejs.org) installed and correctly configure on your machine
+
 Install using 
 ```
 npm install -g vitacompanion-cli
