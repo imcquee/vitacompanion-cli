@@ -15,7 +15,7 @@ var ftpDeploy = new FtpDeploy();
 var ftp = new PromiseFtp();
 
 program
- .version('1.0.0','-v, --version')
+ .version('1.0.2','-v, --version')
  .description('A Command Line Interface for communicating with the Vita via devnonam120 vitacompanion library') 
 
 program
