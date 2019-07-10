@@ -52,7 +52,7 @@ function terminate(client){
 
 function survive(client, state) {
     if(!state) {
-        console.log("KEEPING SCREEN ON, PLEASE REMEMBER TO TURN OFF (CTRL-C or close terminal) THIS CAN DEPLETE YOUR BATTERY AND CAUSE SCREEN BURN IN");
+        console.log("KEEPING SCREEN ON, PLEASE REMEMBER TO TURN OFF (CTRL-C or close terminal) THIS CAN DEPLETE YOUR BATTERY AND CAUSE SCREEN BURN IN. THIS WILL BLOCK THE CURRENT TERMINAL PLEASE OPEN ANOTHER TERMINAL TO CONTINUE WORK");
         state = setInterval(function() {
             
             client.start();

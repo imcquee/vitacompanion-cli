@@ -124,7 +124,7 @@ program
   .description('Toggle Debug Mode')
   .action(async function () {
     save.SMODE = utils.survive(client,0);
-    console.log("Debug Mode: Started");
+    console.log("Debug Mode: Started NOTE: THIS WILL BLOCK THE CURRENT TERMINAL PLEASE OPEN ANOTHER TERMINAL TO CONTINUE WORK AND END DEBUG MODE WITH CRTL-C OR CLOSING THIS TERMINAL");
     var eboot = await utils.deb(process.cwd(),save.ip_addr,client,ftpDeploy,ftp);
     if(eboot) utils.chd(eboot);
 
