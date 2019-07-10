@@ -84,7 +84,7 @@ vita cp myapp.vpk ux0:/downloads
 vita p
 ```
 
-This will send the new eboot.bin to your device, wake it up, close all other applications, and finally launch the new version. Make sure you are in your project's directory.
+This will send the new eboot.bin to your device, wake it up, close all other applications, and finally launch the new version. Make sure you are in your project's directory. Either have eboot.bin and param.sfo files in the directory or a vpk file, it doesn't matter if it is in a subdirectory like 'src' because all subdirectories will be scanned.
 
 ## Debug Mode
 
@@ -92,7 +92,7 @@ This will send the new eboot.bin to your device, wake it up, close all other app
 vita d
 ```
 
-This will send an initial payload similar to 'vita payload' command. It will then listen for changes made to the eboot.bin file and then launch your application after a change occurs. Simply run make and the new version should be installed and launched on the device. Make sure you are in your project's directory.
+This will send an initial payload similar to 'vita payload' command. It will then listen for changes made to the eboot.bin file and then launch your application after a change occurs. Simply run make and the new version should be installed and launched on the device. Make sure you are in your project's directory. Either have eboot.bin and param.sfo files in the directory or a vpk file, it doesn't matter if it is in a subdirectory like 'src' because all subdirectories will be scanned.
 
 This will block your current terminal so you will need to open another to continue to do work.
 
