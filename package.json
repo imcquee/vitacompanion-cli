@@ -1,6 +1,6 @@
 {
   "name": "vitacompanion-cli",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A CLI that utilizes vitacompanion by devnoname120 https://github.com/devnoname120/vitacompanion",
   "repository": {
     "type": "git",
@@ -16,6 +16,7 @@
     "colors": "^1.2.1",
     "commander": "^2.20.0",
     "default-shell": "^1.0.1",
+    "del": "^5.0.0",
     "ftp-deploy": "^2.3.3",
     "glob": "^7.1.4",
     "lodash": "^4.17.5",
@@ -27,7 +28,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["vita","vitacompanion","vitacompanion-cli"],
+  "keywords": [
+    "vita",
+    "vitacompanion",
+    "vitacompanion-cli"
+  ],
   "author": "imcquee",
   "license": "AGPL-3.0"
 }

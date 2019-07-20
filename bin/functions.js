@@ -2,6 +2,7 @@ const fs = require('fs');
 const dir = require("path");
 const glob = require("glob");
 const AdmZip = require('adm-zip');
+const del = require('del');
 
 async function launch (ip_addr,target,client,ftp){
     var found = 0;
@@ -78,7 +79,7 @@ async function chd (pth) {
     }
 }
 
-async function check_param(fpath) {
+async function check_param(fpath, tmp) {
     var eboot = 0;
     var param = 0;
     var vpk = 0;
@@ -88,8 +89,7 @@ async function check_param(fpath) {
         if(dir.basename(result[i]) == 'eboot.bin') eboot = result[i];
         if(dir.basename(result[i]) == 'param.sfo') param = result[i];
     }
-    
-    if(eboot && param) {
+    if( (eboot && param && dir.dirname(eboot) != 'tempV') || tmp) {
         let fd = fs.openSync(param,'r');
         
         var store1 = ["magic", "version", "keyTableOffset", "dataTableOffset" ,"indexTableEntries"];
@@ -156,7 +156,8 @@ async function check_param(fpath) {
     }
     else if(vpk){
         uzip(vpk,fpath);
-        return check_param(fpath);
+        if(eboot && dir.dirname(eboot) == 'tempV') return check_param(fpath, 1);
+        return check_param(fpath, 0);
         
     }
     else{
@@ -169,38 +170,38 @@ async function check_param(fpath) {
 
 
 async function fpayload(fpath, ip_addr,client,TITLE_ID,ftpDeploy,ftp) {
-    var npath = 0;
+    var npath = fpath;
+    var tf = fpath + '/tempV';
     var ebf = await fromDir(fpath,'eboot.bin');
-    if(ebf) npath = ebf[0]
-    
-    await chd(dir.dirname(npath));
-    
+    if(ebf) npath = ebf[0];
+    npath = dir.dirname(npath);
+
     var config = {
         user: "anonymous",
         password: "@anonymous",
         host: ip_addr,
         port: 1337,
-        localRoot: fpath,
+        localRoot: npath,
         remoteRoot: "ux0:/app/" + TITLE_ID + "/",
         include: ["eboot.bin","*.lua"],
         deleteRemote: true,
         forcePasv: true
     }; 
 
-    ftpDeploy
-        .deploy(config)
-        .then(res => console.log("Payload Transferred Successfully"))
-        .catch(err => console.log("ERROR: FTP TRANSFER FAILED"));
-    
+    wake(client);
+    terminate(client);
 
-    await wake(client);
-    await terminate(client);
-    await launch(ip_addr,TITLE_ID,client,ftp);
+    await ftpDeploy
+        .deploy(config)
+        .catch(err => console.log("ERROR: FTP TRANSFER FAILED"))
+        .then(res => {console.log("Payload Transferred Successfully"); launch(ip_addr,TITLE_ID,client,ftp);})
+
+    if(fs.existsSync(tf)) await del.sync(tf, {force: true});
 
 }
 
 async function fdeploy(fpath,ip_addr,client,ftpDeploy,ftp) {
-    var TITLE_ID = await check_param(fpath);
+    var TITLE_ID = await check_param(fpath, 0);
     await fpayload(fpath,ip_addr,client,TITLE_ID,ftpDeploy,ftp);
 }
 
@@ -252,7 +253,7 @@ async function deb(fpath,ip_addr,client,ftpDeploy,ftp) {
     }
     eboot = eboot.toString();
     fdeploy(fpath,ip_addr,client,ftpDeploy,ftp); 
-    if(eboot)return dir.dirname(eboot);
+    if(eboot != 0)return dir.dirname(eboot);
     else return 0;
 };
 

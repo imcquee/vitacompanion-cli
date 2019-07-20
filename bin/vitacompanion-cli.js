@@ -7,6 +7,7 @@ const PromiseFtp = require('promise-ftp');
 const Netcat = require('node-netcat');
 const chokidar = require('chokidar');
 const utils = require('./functions');
+const dir = require("path");
 var settings = './settings.json';
 var save = require(settings);
 
@@ -144,12 +145,24 @@ program
     else{
       save.SMODE = utils.survive(client,0);
       console.log("Debug Mode: Started NOTE: THIS WILL BLOCK THE CURRENT TERMINAL PLEASE OPEN ANOTHER TERMINAL TO CONTINUE WORK AND END DEBUG MODE WITH CRTL-C OR CLOSING THIS TERMINAL");
-      var eboot = await utils.deb(process.cwd(),save.ip_addr,client,ftpDeploy,ftp);
-      if(eboot) utils.chd(eboot);
-
-      watcher = chokidar.watch('eboot.bin').on('change', (event, path) => {
+      var fpath = await process.cwd();
+      vpk = await utils.fromDir(process.cwd(),'*.vpk');
+      eboot = await utils.fromDir(process.cwd(),'eboot.bin');
+      
+      if(vpk) vpk = vpk[0];
+      if(eboot) eboot = eboot[0];
+      utils.fdeploy(process.cwd(),save.ip_addr,client,ftpDeploy,ftp); 
+      
+      if(eboot) {
+        watcher = chokidar.watch(eboot).on('change', (event, path) => {
           utils.fdeploy(process.cwd(),save.ip_addr,client,ftpDeploy,ftp); 
-      });
+        });
+      }
+      else if(vpk){
+        watcher = chokidar.watch(vpk).on('change', (event, path) => {
+          utils.fdeploy(process.cwd(),save.ip_addr,client,ftpDeploy,ftp); 
+        });
+      }
     }
     
 })
