@@ -89,7 +89,7 @@ async function check_param(fpath, tmp) {
         if(dir.basename(result[i]) == 'eboot.bin') eboot = result[i];
         if(dir.basename(result[i]) == 'param.sfo') param = result[i];
     }
-    if( (eboot && param && dir.dirname(eboot) != 'tempV') || tmp) {
+    if( ( eboot && param && !dir.dirname(eboot).includes('tempV') ) || tmp) {
         let fd = fs.openSync(param,'r');
         
         var store1 = ["magic", "version", "keyTableOffset", "dataTableOffset" ,"indexTableEntries"];
@@ -156,7 +156,7 @@ async function check_param(fpath, tmp) {
     }
     else if(vpk){
         uzip(vpk,fpath);
-        if(eboot && dir.dirname(eboot) == 'tempV') return check_param(fpath, 1);
+        if(eboot && dir.dirname(eboot).includes('tempV')) return check_param(fpath, 1);
         return check_param(fpath, 0);
         
     }
@@ -170,6 +170,9 @@ async function check_param(fpath, tmp) {
 
 
 async function fpayload(fpath, ip_addr,client,TITLE_ID,ftpDeploy,ftp) {
+    
+    
+    
     var npath = fpath;
     var tf = fpath + '/tempV';
     var ebf = await fromDir(fpath,'eboot.bin');
@@ -196,7 +199,6 @@ async function fpayload(fpath, ip_addr,client,TITLE_ID,ftpDeploy,ftp) {
         .catch(err => console.log("ERROR: FTP TRANSFER FAILED"))
         .then(res => {console.log("Payload Transferred Successfully"); launch(ip_addr,TITLE_ID,client,ftp);})
 
-    if(fs.existsSync(tf)) await del.sync(tf, {force: true});
 
 }
 
@@ -258,8 +260,9 @@ async function deb(fpath,ip_addr,client,ftpDeploy,ftp) {
 };
 
 async function uzip(vpk,fpath){
+    if(fs.existsSync(tf)) await del.sync(tf, {force: true});
     var zip = new AdmZip(vpk);
-    await zip.extractAllTo(fpath+"/tempV");
+    await zip.extractAllTo(fpath+"/tempV",true);
     
 }
 
