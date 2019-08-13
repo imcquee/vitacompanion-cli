@@ -1,6 +1,7 @@
 {
   "name": "vitacompanion-cli",
-  "version": "1.0.5",
+  "version": "1.0.6",
+
   "description": "A CLI that utilizes vitacompanion by devnoname120 https://github.com/devnoname120/vitacompanion",
   "repository": {
     "type": "git",
